@@ -130,7 +130,7 @@ if [ ! -f haproxy/Dockerfile ]; then
 fi
 
 # Verificar puertos
-echo "🌐 Verificando puertos..."
+echo "Verificando puertos..."
 for port in 80 443 8080; do
   if lsof -i:$port &> /dev/null; then
     echo "El puerto $port está en uso. Abortando."
@@ -142,5 +142,5 @@ done
 echo "Desplegando servicios..."
 docker-compose up --build -d
 
-echo "✅ Entorno desplegado correctamente."
-echo "🌍 Accedé desde https://localhost o la IP de tu VM (aceptá el certificado auto-firmado)."
+echo "Entorno desplegado correctamente."
+echo "Accede desde https://localhost o la IP de tu VM (aceptá el certificado auto-firmado)."
