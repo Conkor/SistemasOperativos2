@@ -18,7 +18,7 @@ fi
 
 # Instalar Docker Compose si no está
 if ! command -v docker-compose &> /dev/null; then
-    echo "📦 Instalando Docker Compose..."
+    echo "Instalando Docker Compose..."
     sudo apt install -y docker-compose
 else
     echo "Docker Compose ya instalado."
