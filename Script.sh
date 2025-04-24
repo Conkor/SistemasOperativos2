@@ -140,7 +140,7 @@ done
 
 # Desplegar contenedores
 echo "Desplegando servicios..."
-docker compose up --build -d
+docker compose up -d --build 
 
 echo "Entorno desplegado correctamente."
 echo "Accede desde https://localhost o la IP de tu VM (aceptá el certificado auto-firmado)."
