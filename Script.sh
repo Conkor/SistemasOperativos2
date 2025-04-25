@@ -111,15 +111,19 @@ fi
 # Crear archivos de Nginx
 if [ ! -f nginx/nginx.conf ]; then
     cat > nginx/nginx.conf <<EOF
-server {
-    listen 443 ssl;
-    server_name localhost;
+events {}
 
-    ssl_certificate /etc/nginx/certs/server.crt;
-    ssl_certificate_key /etc/nginx/certs/server.key;
+http {
+    server {
+        listen 443 ssl;
+        server_name localhost;
 
-    location / {
-        proxy_pass http://haproxy:80;
+        ssl_certificate /etc/nginx/certs/server.crt;
+        ssl_certificate_key /etc/nginx/certs/server.key;
+
+        location / {
+            proxy_pass http://haproxy:80;
+        }
     }
 }
 EOF
@@ -179,4 +183,5 @@ echo "Accede desde https://localhost o https://[IP_PUBLICA_VM] de tu VM (acepta 
 echo "Ejecuta 'docker ps' para ver los contenedores creados"
 echo "Ejecuta 'docker --version' y "docker compose version" para validar las versiones instaladas"
 echo "Ejecuta 'ls certs/' para ver los certificados creados"
+echo "Ejecuta 'ss -tuln | grep LISTEN' para ver los certificados creados"
 
