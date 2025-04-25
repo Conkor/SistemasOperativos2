@@ -175,4 +175,8 @@ echo "Desplegando servicios..."
 docker compose up -d --build 
 
 echo "✅Entorno desplegado correctamente."
-echo "Accede desde https://localhost o la IP de tu VM (aceptá el certificado auto-firmado)."
+echo "Accede desde https://localhost o https://[IP_PUBLICA_VM] de tu VM (acepta el certificado auto-firmado)."
+echo "Ejecuta 'docker ps' para ver los contenedores creados"
+echo "Ejecuta 'docker --version' y "docker compose version" para validar las versiones instaladas"
+echo "Ejecuta 'ls certs/' para ver los certificados creados"
+
