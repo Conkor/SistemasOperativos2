@@ -6,22 +6,37 @@ echo "Verificando e instalando dependencias..."
 
 # Instalar Docker si no está
 if ! command -v docker &> /dev/null; then
-    echo " Instalando Docker..."
+    echo "📦 Instalando Docker CE oficial..."
     sudo apt update
-    sudo apt install -y docker.io
+    sudo apt install -y ca-certificates curl gnupg
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt update
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
     sudo systemctl enable docker
     sudo systemctl start docker
     sudo usermod -aG docker $USER
 else
-    echo "Docker ya instalado."
+    echo "✅ Docker ya instalado."
 fi
 
-# Instalar Docker Compose si no está
-if ! command -v docker-compose &> /dev/null; then
-    echo "Instalando Docker Compose..."
-    sudo apt install -y docker-compose
+# Instalar Docker Compose moderno si no está
+if ! docker compose version &> /dev/null; then
+    echo "📦 Instalando Docker Compose plugin moderno..."
+    mkdir -p ~/.docker/cli-plugins
+    curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+    chmod +x ~/.docker/cli-plugins/docker-compose
+    echo "✅ Docker Compose plugin instalado."
 else
-    echo "Docker Compose ya instalado."
+    echo "✅ Docker Compose ya disponible."
 fi
 
 echo "Verificando estructura del proyecto..."
