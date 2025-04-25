@@ -12,6 +12,14 @@ then
     sudo apt install -y curl
 fi
 
+# Verificar si el usuario pertenece al grupo docker
+if ! groups $USER | grep -q '\bdocker\b'; then
+    echo "Tu usuario no está en el grupo docker. Agregándolo..."
+    sudo usermod -aG docker $USER
+    echo "✅Listo. Debes cerrar sesión y volver a entrar para que los cambios tomen efecto."
+    exit 1
+fi
+
 # Instalar Docker si no está
 if ! command -v docker &> /dev/null; then
     echo "Instalando Docker CE oficial..."
@@ -47,13 +55,6 @@ else
     echo "✅ Docker Compose ya disponible."
 fi
 
-# Verificar si el usuario pertenece al grupo docker
-if ! groups $USER | grep -q '\bdocker\b'; then
-    echo "Tu usuario no está en el grupo docker. Agregándolo..."
-    sudo usermod -aG docker $USER
-    echo "✅Listo. Debes cerrar sesión y volver a entrar para que los cambios tomen efecto."
-    exit 1
-fi
 
 echo "Verificando estructura del proyecto..."
 
