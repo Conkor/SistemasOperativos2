@@ -179,6 +179,14 @@ echo "Desplegando servicios..."
 docker compose up -d --build 
 
 echo "✅Entorno desplegado correctamente."
+
+# Personalizar index.html de apache1
+docker exec sistemasoperativos2-apache1-1 bash -c "echo '<h1>Hola desde Apache1</h1>' > /usr/local/apache2/htdocs/index.html"
+
+# Personalizar index.html de apache2
+docker exec sistemasoperativos2-apache2-1 bash -c "echo '<h1>Hola desde Apache2</h1>' > /usr/local/apache2/htdocs/index.html"
+
+
 echo "Accede desde https://localhost o https://[IP_PUBLICA_VM] de tu VM (acepta el certificado auto-firmado)."
 echo "Ejecuta 'docker ps' para ver los contenedores creados"
 echo "Ejecuta 'docker --version' y "docker compose version" para validar las versiones instaladas"
