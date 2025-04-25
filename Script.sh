@@ -13,12 +13,21 @@ then
 fi
 
 # Verificar si el usuario pertenece al grupo docker
-if ! groups $USER | grep -q '\bdocker\b'; then
-    echo "Tu usuario no está en el grupo docker. Agregándolo..."
-    sudo usermod -aG docker $USER
-    echo "✅Listo. Debes cerrar sesión y volver a entrar para que los cambios tomen efecto."
-    exit 1
+if id -nG "$USER" | grep -qw docker; then
+    echo "✅ El usuario ya pertenece al grupo docker."
+else
+    # Verificar si ya fue agregado en /etc/group pero falta relogin
+    if grep -q "^docker:.*\b$USER\b" /etc/group; then
+        echo "⚠️ El usuario ya fue agregado al grupo docker, pero debes cerrar sesión y volver a entrar para que los cambios tomen efecto."
+        exit 1
+    else
+        echo "➕ Agregando el usuario al grupo docker..."
+        sudo usermod -aG docker $USER
+        echo "✅ Usuario agregado al grupo docker. Debes cerrar sesión y volver a entrar para aplicar los cambios."
+        exit 1
+    fi
 fi
+
 
 # Instalar Docker si no está
 if ! command -v docker &> /dev/null; then
