@@ -4,9 +4,17 @@ set -e
 
 echo "Verificando e instalando dependencias..."
 
+# Verificar si curl está instalado
+if ! command -v curl &> /dev/null
+then
+    echo "curl no está instalado. Instalándolo..."
+    sudo apt update
+    sudo apt install -y curl
+fi
+
 # Instalar Docker si no está
 if ! command -v docker &> /dev/null; then
-    echo "📦 Instalando Docker CE oficial..."
+    echo "Instalando Docker CE oficial..."
     sudo apt update
     sudo apt install -y ca-certificates curl gnupg
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -30,13 +38,21 @@ fi
 
 # Instalar Docker Compose moderno si no está
 if ! docker compose version &> /dev/null; then
-    echo "📦 Instalando Docker Compose plugin moderno..."
+    echo "Instalando Docker Compose plugin moderno..."
     mkdir -p ~/.docker/cli-plugins
     curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
     chmod +x ~/.docker/cli-plugins/docker-compose
     echo "✅ Docker Compose plugin instalado."
 else
     echo "✅ Docker Compose ya disponible."
+fi
+
+# Verificar si el usuario pertenece al grupo docker
+if ! groups $USER | grep -q '\bdocker\b'; then
+    echo "Tu usuario no está en el grupo docker. Agregándolo..."
+    sudo usermod -aG docker $USER
+    echo "✅Listo. Debes cerrar sesión y volver a entrar para que los cambios tomen efecto."
+    exit 1
 fi
 
 echo "Verificando estructura del proyecto..."
@@ -157,5 +173,5 @@ done
 echo "Desplegando servicios..."
 docker compose up -d --build 
 
-echo "Entorno desplegado correctamente."
+echo "✅Entorno desplegado correctamente."
 echo "Accede desde https://localhost o la IP de tu VM (aceptá el certificado auto-firmado)."
